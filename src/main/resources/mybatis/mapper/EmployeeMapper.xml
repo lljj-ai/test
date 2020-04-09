@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nuc.edu.cn.mapper.EmployeeMapper">
+      
+      <resultMap id="findEmployeeDeResult" type="nuc.edu.cn.pojo.Department">
+       <id column="dept_id" property="deptId"/>
+       <result column="dept_name" property="deptName"/>
+      <collection property="emplyees"  ofType="nuc.edu.cn.pojo.Employee">
+             <id column="id" property="id"/>
+             <result column="sex" property="sex"/>
+             <result column="name" property="name"/>
+             <result column="dept_id" property="deptId"/>
+      </collection>
+      </resultMap>
+      <select id="findEmployeeByDepartment" parameterType="String" resultMap="findEmployeeDeResult">
+      select employee.*from employee,department 
+      where employee.dept_id=department.dept_id 
+      AND department.dept_name=#{deptName}    
+      </select>
+      
+      
+      <resultMap id="findEmployeeSaResult" type="nuc.edu.cn.pojo.Salary">
+            <id column="employee_id" property="employeeId"/>
+            <result column="salary" property="salary"/>
+         <collection property="employeess"  ofType="nuc.edu.cn.pojo.Employee">
+             <id column="id" property="id"/>
+             <result column="sex" property="sex"/>
+             <result column="name" property="name"/>
+             <result column="dept_id" property="deptId"/>    
+         </collection>
+      </resultMap>
+       <select id="findEmployeeBySalary" parameterType="Integer" resultMap="findEmployeeSaResult">  
+           select salary.* from salary,employee 
+           where salary.employee_id=employee.id
+            and salary.salary>#{salary}
+       </select>
+       
+       
+       <resultMap id="findDepartmentResult" type="nuc.edu.cn.pojo.Employee">
+              <id column="id" property="id"/>
+             <result column="sex" property="sex"/>
+             <result column="name" property="name"/>
+             <result column="dept_id" property="deptId"/> 
+        <association property="department" javaType="nuc.edu.cn.pojo.Department">
+                <id column="dept_id" property="deptId"/>
+                <result column="dept_name" property="deptName"/>
+        </association>
+        </resultMap>
+        <select id="findDepartment" parameterType="String" resultMap="findDepartmentResult"> 
+                   select department.* from department,employee 
+                   where department.dept_id=employee.dept_id and 
+                   employee.name=#{name}
+        </select> 
+        
+          
+          <resultMap id="findEmployee" type="nuc.edu.cn.pojo.Employee">
+          <id column="id" property="id"/>
+          <result column="sex" property="sex"/>
+          <result column="name" property="name"/>
+          <result column="dept_id" property="deptId"/>
+       </resultMap>
+       <select id="findEmployeeById" parameterType="Integer" resultMap="findEmployee">
+            select * from employee where id=#{id}
+       </select>
+       
+       
+       <insert id="insertEmployee" useGeneratedKeys="true" keyProperty="id" parameterType="nuc.edu.cn.pojo.Employee" >
+            insert into employee(sex,name) values(#{sex},#{name})
+       </insert>
+       
+       <delete id="deleteEmployee" parameterType="Integer">
+            delete from employee where id=#{id}
+       </delete>
+       
+       <update id="updateEmployee" useGeneratedKeys="true" keyProperty="id" parameterType="nuc.edu.cn.pojo.Employee" >
+           update employee set name=#{name} where sex=#{sex}
+       </update>
+</mapper>        
